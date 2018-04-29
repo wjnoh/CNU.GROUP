@@ -1,0 +1,36 @@
+<div class="">
+  <% if @timetable.empty? %>
+    저장된 시간표가 없습니다.
+  <% else %>
+    <% @timetable.each_with_index do |a , index| %>
+    <%# TODO 대표설정, 삭제 버튼 크기 작게 / 오른쪽에 위치 %>
+    <div class="d-flex align-items-center">
+      <div class="w-100">
+        <a onclick="readTimetable(<%=a.id%>)" href="#"><%= a.title %></a>
+        <% if a.main  %>
+        <span style="color: green;">- 대표 시간표</span>
+        <% end %>
+        <div class="float-right">
+          <% unless a.main %>
+          <a class="a-none" href="/timetable/<%= a.id %>/main" data-method="patch">
+            <button type="button" class="btn btn-sm btn btn-outline-secondary" data-dismiss="modal">대표 설정</button>
+          </a>
+          <% end %>
+          <a class="a-none" href='/timetable/<%= a.id %>' data-confirm='정말로 삭제하시겠습니까?' data-method="delete">
+            <button type="button" class="btn btn-sm btn btn-outline-secondary" data-dismiss="modal">삭제</button>
+          </a>
+        </div>
+      </div>
+    </div>
+    <% unless index == @timetable.size - 1 %>
+      <hr>
+    <% end %>
+    <% end %>
+  <% end %>
+</div>
+
+<script>
+function readTimetable(tableID){
+  window.open("/timetable/"+tableID, "" , "width=500 , height=500, scrollbars=yes");
+};
+</script>

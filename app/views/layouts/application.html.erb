@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+
+    <title>CNU.GROUP</title>
+
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all' %>
+    <%= javascript_include_tag 'application' %>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://use.fontawesome.com/6ebf7a3357.js"></script>
+
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <div id="loading"><img id="loading-image" src="http://pds26.egloos.com/pds/201712/25/70/c0116970_5a40defbdc474.gif" alt="Loading..." /></div>
+
+    <%= yield %>
+
+    <script type="text/javascript">
+    $(window).load(function() {
+         $('#loading').hide();
+        });
+    </script>
+
+  </body>
+
+
+</html>

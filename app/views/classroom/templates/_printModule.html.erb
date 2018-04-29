@@ -1,0 +1,35 @@
+<!-- 수업시간들을 출력 -->
+<div class="card-body">
+  <% if values.empty? %>
+    &hellip;
+  <% else %>
+    <% values.each do |value| %>
+      <%= value %><br/>
+    <% end %>
+  <% end %>
+</div>
+
+<!-- 다음 수업시간까지의 시간을 출력 -->
+<div class="card-footer">
+  <div class="card-emptyCheckClassRoomster">
+    <% @hashClassAndRemainTime.keys.each do |k| %>
+      <% if key.include? k %>
+        <% if @hashClassAndRemainTime[k].nil? %>
+          <span>오늘은 더이상 수업이 없습니다.</span>
+        <% else %>
+          <% if @hashClassAndRemainTime[k][0] == 0 %>
+            <span>
+              다음 수업까지<br><%=@hashClassAndRemainTime[k][1]%>분 남았습니다.
+            </span>
+          <% else %>
+            <span>
+              다음 수업까지<br><%=@hashClassAndRemainTime[k][0]%>시간
+              <%=@hashClassAndRemainTime[k][1]%>분 남았습니다.
+            </span>
+          <% end %>
+        <% end %>
+      <% break # 출력을 했으면 hashCheckClassAndTimes의 다음 key를 진행(성능) %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

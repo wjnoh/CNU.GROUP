@@ -1,0 +1,72 @@
+<div class="container-fluid">
+
+  <div class="modal-dialog modal-transparent">
+    <div class="modal-content modal-shadow">
+
+      <div class="text-center mt-4">
+        <h2><a href="/" class="a-color-black">CNU.GROUP</a></h2>
+      </div>
+
+      <div class="container m-0">
+        <hr/>
+
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+        <%= devise_error_messages! %>
+
+        <div class="form-group">
+          <%= f.email_field :email, autofocus: false, class: 'form-control', placeholder: "이메일" , required: true %>
+        </div>
+
+        <div class="form-group">
+          <%= f.text_field :name, autofocus: false, class: 'form-control userName', placeholder: "이름" , required: true %>
+        </div>
+
+        <div class="form-group d-flex">
+          <%= f.number_field :studentid, autofocus: false, class: 'form-control w-80', placeholder: "학번", required: true %>
+          <%= f.select :gender, ["남", "여"], {}, {class: 'form-control ml-3 w-20'} %>
+        </div>
+
+        <div class="form-group">
+          <%= f.password_field :password, autocomplete: "off", class: 'form-control passwordPress', placeholder: '비밀번호', required: true %>
+        </div>
+
+        <div class="form-group">
+          <%= f.password_field :password_confirmation, autocomplete: "off", class: 'form-control passwordPress', placeholder: '비밀번호 확인', required: true %>
+          <div class="mt-2">
+            <span class="capsLockView" style="color:red; display: none;">Caps Lock is ON</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <%= f.submit "회원가입", class: "btn btn-outline-primary btn-block submitClick" %>
+        </div>
+        <% end %>
+        <hr/>
+
+        <a class="a-none" href="/users/sign_in">
+          <div class="btn btn btn-outline-secondary btn-block">로그인</div>
+        </a>
+
+        <br/>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- capsLock JS  -->
+<%= render "templates/capsLockJS" %>
+
+<script>
+  $(".submitClick").on("click", function(){
+    var userName = $('.userName').val()
+    if(userName === "관리자"){
+      $(".submitClick").off("click");
+      alert("\"관리자\"라는 이름은 불가능합니다.")
+      return false;
+    }
+  })
+
+</script>

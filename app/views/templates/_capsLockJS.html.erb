@@ -1,0 +1,57 @@
+<script>
+// Caps Lock
+$('.passwordPress').on('keyup', function(event){
+  var asciiOfStr = event.which ;
+  var displayStatus = $(".capsLockView").attr("style").search("display: none") // 반환값 >= 0 이면 hide상태
+
+  // 문자 , CapsLock 이 아닌 값이 입력되면 이전의 display 상태를 유지한다.
+  if(! (isChar(asciiOfStr) || isCapsLock(asciiOfStr))){
+    if( displayStatus >= 0){
+      $(".capsLockView").hide();
+    }
+    else{
+      $(".capsLockView").show();
+    }
+  }
+  else{
+    // CapsLock을 입력하면 이전의 displayStatus를 뒤집는다.
+    if( isCapsLock(asciiOfStr)){
+      if( displayStatus >= 0){
+        $(".capsLockView").show();
+      }
+      else{
+        $(".capsLockView").hide();
+      }
+    }
+    // 문자를 입력하면 대,소문자에 따라 displayStatus를 결정한다.
+    else{
+      var curkeyName = event.key;
+      var convertChar = String.fromCharCode(asciiOfStr)  // ascii 값을 대문자로 변환
+      if( convertChar === curkeyName || event.shiftKey){
+        $(".capsLockView").show();
+      }
+      else{
+        $(".capsLockView").hide();
+      }
+    }
+  }
+});
+
+
+var isChar = function(asciiOfStr){
+  if(asciiOfStr >= 65 && asciiOfStr <= 90){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+var isCapsLock = function(asciiOfStr){
+  if( asciiOfStr === 20 ){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+</script>

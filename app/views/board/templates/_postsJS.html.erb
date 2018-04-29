@@ -1,0 +1,68 @@
+<script>
+// 게시글 사진 크기 조정
+$('.postContent').siblings().find('img').css({"maxWidth": "80%", "maxHeight": "80%"})
+
+// 댓글 더보기 , 닫기 설정
+$(document).ready(function () {
+  <% if @infoPost.nil? %>
+    <% @posts.each do |post| %>
+      var postID = "<%=post.id%>";
+      replyMoreSettings(postID)
+    <% end %>
+  <% else %>
+    var postID = "<%=@infoPost.id%>";
+    replyMoreSettings(postID)
+  <% end %>
+});
+
+var replyMoreSettings = function(postID){
+  if ($(".hideMe" + postID).length < 1) {
+    $(".showReply" + postID).hide();
+  } else {
+    $(".showReply" + postID).show();
+  }
+
+  $(".hideMe"+postID).attr('style', 'display:none');
+
+  $(".showReply"+postID).click(function () {
+    $(".hideMe"+postID).slideToggle();
+    $(".showOrHide"+postID).toggle();
+    $(".fold"+postID).toggle();
+  });
+}
+
+//ajax를 이용해서 댓글 삭제하기
+$(".destroyReply").on('click', function () {
+  var deleteCheck = confirm("정말로 삭제하시겠습니까?");
+  if(deleteCheck){
+    replyID = $(this).attr('id');
+    postID = $(this).attr('name');
+    reply = $(this).parent();
+
+    if (reply.attr('class') == "showMe" + postID) {
+      reply.prev("div").addClass("showMe" + postID);
+      reply.prev("div").removeClass("hideMe" + postID);
+      reply.prev("div").show();
+    } else {}
+
+    $.ajax({
+      url: '/post/reply/' + replyID,
+      type: 'delete',
+      success: function (r) {}
+    });
+
+    $(this).parent().remove();
+
+    if ($(".hideMe" + postID).length < 1) {
+      $(".showReply" + postID).hide();
+    }
+    else {
+      $(".showReply" + postID).show();
+      $(".showOrHide" + postID).text("댓글 " + $(".hideMe" + postID).length + "개 더 보기");
+    }
+  }
+  else{
+    return false;
+  }
+});
+</script>

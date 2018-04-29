@@ -1,0 +1,86 @@
+<!-- 모임 찾기 버튼 -->
+<a href="#" data-toggle="modal" data-target="#findBoardModal">
+<div class="card mt-4">
+  <div class="card-body">
+    <div class="text-center">
+      <i class="fa fa-search fa-5x main-blue" aria-hidden="true"></i>
+    </div>
+  </div>
+</div>
+</a>
+
+<!-- 모임 찾기 모달 -->
+<div id="findBoardModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h4 class="modal-title d-flex align-items-center"><span class="">모임 찾기</span></h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- 검색 입력 영역 -->
+          <%= form_with(url: '/home/board') do |f| %>
+          <div class="mb-2">
+            <%= f.text_field :searchBoardName , class: "form-control", placeholder: "모임 이름" %>
+          </div>
+          <div class="form-group d-flex justify-content-between mb-2">
+            <div class="w-100 mr-2">
+              <select name="category" class="select form-control category">
+                <option>모든 관심사</option>
+                <option>스터디</option>
+                <option>운동</option>
+                <option>취미</option>
+                <option>사교</option>
+                <option>자유주제</option>
+              </select>
+            </div>
+            <div class="w-100">
+            <%= f.submit "검색" , class: "searchBoard btn btn btn-outline-secondary btn-block" %>
+            </div>
+          </div>
+          <div class="day-text-style mb-2" style="float:right;">
+            <span style="color:blue;">참여가능</span> /
+            <span style="color:orange;">가입대기</span> /
+            <span style="color:gray;">참여중</span> /
+            <span style="color:red;">마감</span>
+          </div>
+          <% end %>
+
+        <!-- 검색 출력 영역 -->
+        <div id="boards" class="find-result-style">
+          <%= render 'home/templates/searchResult'  %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- 최신 모임 10개 -->
+<div class="grid">
+  <div class="grid-sizer"></div>
+  <div class="gutter-sizer"></div>
+  <% @recentBoards.each do |board| %>
+    <a href="/board/<%= board.id %>/stream" class="a-color-black">
+      <div class="card grid-item mt-4">
+        <div class="card-header">
+          <%= board.title %>
+          <span style="float:right;"><%= board.category %></span>
+        </div>
+        <div class="card-body">
+          <p class="card-text"><%= board.info %></p>
+        </div>
+        <div class="card-footer">
+          <span class="badge badge-primary" style="float:right;">NEW</span>
+          <span><%= board.created_at.strftime("최근 생성된 모임입니다.") %></span>
+          <!-- %_m월 %e일 %H시 %M분 -->
+        </div>
+      </div>
+    </a>
+  <% end %>
+</div>

@@ -1,0 +1,86 @@
+<div class="container">
+
+  <nav class="navbar navbar-expand-lg navbar-light mb-1 mt-1 pl-0 pr-0">
+
+    <button class="navbar-toggler" style="outline:none; font-size:1.7rem;" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <a class="navbar-brand navbar-title-style p-0" href="/home/main">CNU.GROUP</a>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+
+        <li class="nav-item mb-1 mt-1">
+          <a class="nav-link pl-2 pr-2 nav-active" href="/classroom">빈 강의실 찾기</a>
+        </li>
+        <li class="nav-item mb-1 mt-1">
+          <a class="nav-link pl-2 pr-2 nav-active" href="/freeBoard">익명게시판</a>
+        </li>
+
+        <% if user_signed_in? %>
+        <li class="nav-item dropdown mb-1 mt-1">
+          <a class="nav-link pl-2 pr-2 nav-active" href="/board" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            내 모임
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <% if current_user.board_count == 0 %>
+              <a class="dropdown-item" href="#">가입된 모임이 없습니다.</a>
+            <% else %>
+              <% current_user.accept_applies.each_with_index do |acceptApply , index| %>
+                <a class="dropdown-item nav-active-group nav-active-board" href="/board/<%= acceptApply.board.id %>/stream"><%= acceptApply.board.title %></a>
+                <% unless index == current_user.accept_applies.size - 1 %>
+                  <div class="dropdown-divider"></div>
+                <% end %>
+              <% end %>
+            <% end %>
+          </div>
+        </li>
+        <li class="nav-item mb-1 mt-1">
+          <a class="nav-link pl-2 pr-2 nav-active" href="/timetable">시간표</a>
+        </li>
+        <li class="nav-item mb-1 mt-1">
+          <a class="nav-link pl-2 pr-2 nav-active" href="/users/edit">회원정보</a>
+        </li>
+        <% end %>
+
+        <% if user_signed_in? %>
+        <li class="nav-item mb-1 mt-1">
+          <a class="nav-link pl-2 pr-2 nav-active" href="/users/sign_out" data-method="delete">로그아웃</a>
+        </li>
+        <% else %>
+        <li class="nav-item mb-1 mt-1">
+          <a class="nav-link pl-2 pr-2 nav-active" href="/users/sign_in">로그인</a>
+        </li>
+        <li class="nav-item mb-1 mt-1">
+          <a class="nav-link pl-2 pr-2 nav-active" href="/users/sign_up">회원가입</a>
+        </li>
+        <% end %>
+
+      </ul>
+    </div>
+  </nav>
+
+</div>
+
+<script>
+// http://foundation.zurb.com/forum/posts/42363-add-active-class-to-nav-dependent-on-page
+$(function() {
+   var pgurl = window.location.href.split("/")[3];
+     // console.log(pgurl);
+   $(".nav-active").each(function() {
+      // console.log($(this).attr("href").split("/")[1]);
+      if ($(this).attr("href").split("/")[1] == pgurl || $(this).attr("href") == '')
+        $(this).addClass("active");
+   })
+
+   var pgurl2 = window.location.href.split("/")[4];
+     // console.log(pgurl2);
+   $(".nav-active-board").each(function() {
+      // console.log($(this).attr("href").split("/")[2]);
+      if ($(this).attr("href").split("/")[2] == pgurl2 || $(this).attr("href") == '')
+        $(this).addClass("active");
+   })
+});
+
+</script>

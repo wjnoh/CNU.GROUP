@@ -1,0 +1,37 @@
+<%= render "templates/navbar" %>
+<div class="wrapper">
+
+  <!-- 메인사진 -->
+  <header class="w-100" style="background-image: url('http://pds27.egloos.com/pds/201712/23/70/c0116970_5a3dfc64dc50f.jpg');">
+    <div class="container h-100 d-flex flex-column justify-content-center">
+      <h2 class="font-weight-thin">익명게시판</h2>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <!-- 좌측 영역 -->
+      <div class="col-12 col-lg-3 pt-4">
+        <%= render "anony/category" %>
+      </div>
+
+      <div class="pt-4 ml-4">
+        <p>
+        "<span style="color:red;"><%= @searchContent %></span>"에 대한 검색 결과가 없습니다.
+        </p>
+        검색하신 단어가 맞는지 다시 한번 확인해주세요.<br>
+        띄어쓰기를 다시 한 번 확인해주세요.<br>
+        제목으로만 검색이 가능합니다.
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:100px;">
+  <%= render "templates/footer" %>
+</div>
+
+
+<!-- JS 코드  -->
+<%= render "board/templates/postsJS" %>

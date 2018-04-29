@@ -1,0 +1,5 @@
+$("#boards").html("<%= escape_javascript(render 'home/templates/searchResult' )%>");
+
+<% if @boards[0].nil? %>
+  alert("검색 결과가 없습니다.")
+<% end %>

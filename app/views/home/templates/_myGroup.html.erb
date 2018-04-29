@@ -1,0 +1,97 @@
+<!-- 모임 추가 버튼 -->
+<% if user_signed_in? %>
+  <a href="#" data-toggle="modal" data-target="#newBoardModal">
+<% else %>
+  <a href="/users/sign_in">
+<% end %>
+  <div class="card mt-4">
+    <div class="card-body">
+      <div class="text-center">
+        <i class="fa fa-plus-circle fa-5x main-blue" aria-hidden="true"></i>
+      </div>
+    </div>
+  </div>
+  </a>
+
+  <!-- 모임 추가 모달 -->
+  <div id="newBoardModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title d-flex align-items-center"><span class="">모임 만들기</span></h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+
+          <%= form_tag("/board") do %>
+            <div class="form-group">
+              <%= text_field_tag :boardName , nil, class: "form-control" , placeholder: "모임 이름" , required: true, maxlength: "20"  %>
+            </div>
+            <div class="form-group">
+              <%= text_field_tag :groupInfo, nil , class: "form-control" , placeholder: "모임 설명" , required: true, maxlength: "50" %>
+            </div>
+            <div class="form-group">
+              <select name="category" class="select form-control category" required>
+                <option selected>모임 관심사</option>
+                <option>스터디</option>
+                <option>운동</option>
+                <option>취미</option>
+                <option>사교</option>
+                <option>자유주제</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <%= text_field_tag :totalNumberOfMember, nil , type: "number" , class: "form-control" , placeholder: "모임 정원" , required: true , min: "2" , max: "50"%>
+            </div>
+            <%= submit_tag '모임 만들기' , class: "btn btn-outline-primary btn-block createBoard" %>
+          <% end %>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 참여하고 있는 모임 목록 -->
+  <% if user_signed_in? %>
+    <% if @emptyBoardList %>
+    <h5 class="text-center pt-4">
+      <p class="mb-2 mt-1">가입된 모임이 없습니다.</p>
+      직접 모임을 만들거나, 모임을 찾아 가입하세요!
+    </h5>
+    <% else %>
+
+    <div class="grid">
+      <div class="grid-sizer"></div>
+      <div class="gutter-sizer"></div>
+      <% @userHavingBoardList.each do |acceptApply| %>
+        <div class="grid-item mt-4">
+            <a href="/board/<%= acceptApply.board.id %>/stream" class="a-color-black">
+              <div class="card">
+                <div class="card-header">
+                  <%= acceptApply.board.title %>
+                  <span style="float:right;"><%= acceptApply.board.category %></span>
+                </div>
+                <div class="card-body">
+                  <p class="card-text"><%= acceptApply.board.info %></p>
+                </div>
+                <div class="card-footer">
+                  <%= @hashBoardAndMessage["#{acceptApply.board.id}"] %>
+                </div>
+              </div>
+            </a>
+        </div>
+      <% end %>
+    </div>
+
+    <% end %>
+  <% else %>
+    <h5 class="text-center pt-4">
+      <p class="mb-2 mt-1">
+        참여 중인 모임 목록을 확인하려면,
+      </p>
+      로그인을 해주세요.
+    </h5>
+  <% end %>

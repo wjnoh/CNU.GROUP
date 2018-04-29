@@ -1,0 +1,65 @@
+<%= render "templates/navbar" %>
+
+<div class="wrapper">
+  <header class="w-100" style="background-image: url('http://pds27.egloos.com/pds/201712/23/70/c0116970_5a3df94b4e2ee.jpg');">
+    <div class="container h-100 d-flex flex-column justify-content-center">
+      <h2 class="font-weight-thin">빈 강의실 찾기</h2>
+      <div class="header-sub-message">
+        <h5 class="font-weight-thin">UPDATE : 2017.09.08</h5>
+      </div>
+    </div>
+  </header>
+
+  <section class="container pt-4 pb-4">
+    <!-- 사용자로부터 입력받는 영역  -->
+    <%= render "classroom/templates/form" %>
+    <hr class="mb-4">
+
+    <!-- 강의실 목록 출력 영역  -->
+    <div class="row">
+      <!-- 모든 강의실 선택 시  -->
+      <% if @currentClassRoomValue == "모든 강의실" %>
+        <%= render "classroom/templates/allClassroom" %>
+
+      <!-- 빈 강의실 선택 시 -->
+      <% elsif @currentClassRoomValue == "빈 강의실" %>
+        <%= render "classroom/templates/emptyClassroom" %>
+
+      <!-- 해당요일에 수업이 없는 강의실을 선택 시 -->
+      <% elsif @hashClassAndTimes["#{@currentClassRoomValue}"].empty? %>
+        <div class="col-12 text-center">
+          <br/>
+          <h5>오늘
+            <%= @currentClassRoomValue %>
+            강의실은 비어있습니다.</h5>
+        </div>
+
+      <!-- 특정 강의실을 선택 시 -->
+      <% else %>
+        <%= render "classroom/templates/theClassroom" %>
+      <% end %>
+    </div>
+
+  </section>
+</div>
+
+<%= render "templates/footer" %>
+
+
+<script>
+  $(document).ready(function () {
+    $('#collegeSelect option:contains(<%= @currentCollegeValue %>)').prop({selected: true});
+    $('#daySelect option:contains(<%= @currentDayValue %>)').prop({selected: true});
+    $('#classRoomSelect option:contains(<%= @currentClassRoomValue %>)').prop({selected: true});
+  });
+
+  $("#collegeSelect").change(function () {
+    location.href = "/classroom/college/" + $(this).val();
+  });
+  $("#daySelect").change(function () {
+    location.href = "/classroom/day/" + $(this).val();
+  });
+  $("#classRoomSelect").change(function () {
+    location.href = "/classroom/theClass/" + $(this).val();
+  });
+</script>

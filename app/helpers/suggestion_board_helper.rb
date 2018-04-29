@@ -1,0 +1,2 @@
+module SuggestionBoardHelper
+end

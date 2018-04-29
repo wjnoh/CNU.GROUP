@@ -1,0 +1,298 @@
+<div class="text-center mb-3">
+<!-- 글쓰기 모달 트리거 -->
+  <% if current_user.nil? %>
+  <button type="button" class="btn btn btn-outline-primary btn-lg btn-block" onclick="location.href='/users/sign_in'">글쓰기</button>
+  <% else %>
+  <button type="button" class="btn btn btn-outline-primary btn-lg btn-block" data-toggle="modal" data-target="#postWriteModal">글쓰기</button>
+  <% end %>
+</div>
+
+<!-- 글쓰기 모달 -->
+<div id="postWriteModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"><span class="">글쓰기</span></h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="mb-3 w-100">
+          <%= form_tag "" , name: "createForm" do %>
+          <%= text_field_tag :createTitle , nil , class: "w-100 form-control mb-2" , placeholder: "제목을 입력하세요." , required: true , maxlength: "30" %>
+          <select class="form-control mb-3" id="crateCategory" name="crateCategory">
+            <option>자유게시판</option>
+            <option>홍보게시판</option>
+            <option>질문게시판</option>
+          </select>
+          <%= text_area_tag :createContent, nil , class: "tinymce" %>
+        </div>
+        <div class="row" >
+          <div class="col-lg-6 col-12"></div>
+          <div class="col-lg-6 col-12">
+            <div class="d-flex justify-content-end">
+              <button type="button" class="btn btn btn-outline-secondary file-upload-style" data-dismiss="modal">취소</button>
+              <%= submit_tag '올리기' , class: "btn btn-outline-primary ml-2 file-upload-style createPost" %>
+            </div>
+          </div>
+          <% end %>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- 글수정 모달  -->
+<div id="postUpdateModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"><span class="">글 수정하기</span></h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="mb-3 w-100">
+          <%= form_tag "" , name: "updateForm" , method: :patch do %>
+          <%= hidden_field_tag :postID, nil %>
+          <%= text_field_tag :updateTitle , nil , class: "w-100 form-control mb-2", required: true  %>
+          <select class="form-control mb-3" id="updateCategory" name="updateCategory">
+            <option>자유게시판</option>
+            <option>홍보게시판</option>
+            <option>문의/요청</option>
+          </select>
+          <%= text_area_tag :updateContent, nil , class: "tinymce" %>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-6 col-12"></div>
+          <div class="col-lg-6 col-12">
+            <div class="d-flex justify-content-end">
+              <button type="button" class="btn btn btn-outline-secondary file-upload-style" data-dismiss="modal">취소</button>
+              <%= submit_tag '올리기' , class: "btn btn-outline-primary ml-2 file-upload-style updatePost" %>
+            </div>
+          </div>
+          <% end %>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- 사이드 바  -->
+<div class="card">
+  <div class="card-body">
+    <ul class="nav nav-pills flex-column groupNav-active">
+      <li class="nav-item">
+        <a class="nav-link a-color-black groupNav-active-search" href="/freeBoard">자유게시판</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link a-color-black" href="/adBoard">홍보게시판</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link a-color-black" href="/suggestion">질문게시판</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<%= form_tag "" , name: "searchForm" do %>
+<select class="form-control mt-3" id="searchCategory" name="searchCategory">
+  <option>자유게시판</option>
+  <option>홍보게시판</option>
+  <option>질문게시판</option>
+</select>
+<div class="d-flex justify-content-between mt-2">
+<%= text_field_tag :searchPost , nil , class: "form-control" , placeholder: "제목" , required: true %>
+<%= submit_tag '검색' , class: "btn btn btn-outline-secondary ml-2 searchPost" %>
+</div>
+<% end %>
+
+
+
+<script>
+// 검색했을 때 검색 카테고리를 유지하기 위한 코드
+var select = document.getElementById("searchCategory")
+var searchCategory = "<%=@searchCategory%>"
+if(searchCategory){
+  if(searchCategory == "자유게시판"){
+    select.selectedIndex = "0";
+  }
+  else if(searchCategory == "홍보게시판"){
+    select.selectedIndex = "1";
+  }
+  else if(searchCategory == "질문게시판"){
+    select.selectedIndex = "2";
+  }
+  else{
+    alert("잘못된 카테고리입니다.")
+  }
+}
+
+
+// 모달 초기화
+$('.modal').on('hide.bs.modal', function (e) {
+  $('#postWriteModal').find('form')[0].reset();
+});
+
+
+// 게시글 수정 시 원래 값 출력
+function updatePost(paramPostID){
+  // tinymce 편집기에 원래 게시글 내용 출력
+  var originContent = '.updateContent_' + paramPostID;
+  var postContent = $(originContent).attr('value');
+  tinyMCE.activeEditor.setContent(postContent);
+
+  // 원래 게시글의 제목 출력
+  var originTitle = '.updateTitle_' + paramPostID;
+  var postTitle = $(originTitle).attr('value');
+  $('#updateTitle').val(postTitle)
+
+  // 원래 게시글의 카테고리
+  var originCategory = '.updateCategory_' + paramPostID;
+  var postCategory = $(originCategory).attr('value');
+  $("#updateCategory").val(postCategory)
+
+  // 원래 게시글의 작성자
+  var originWriter = '.updateWriter_' + paramPostID;
+  var postWriter = $(originWriter).attr('value');
+  $("#updateWriter").val(postWriter)
+
+  // 컨트롤러에 넘겨줄 정보
+  $('#postID').val(paramPostID);
+}
+
+
+
+// tinymce
+tinymce.init({
+  selector: '#createContent, #updateContent',
+  language: 'ko_KR',
+  statusbar: false,
+  branding: false,
+  menubar: false,
+  height : 200 ,
+  toolbar_items_size: 'small',
+  content_style: "img {max-width: 80%; max-height: 80%;}",
+
+  plugins: "textcolor emoticons uploadimage",
+
+  toolbar: 'styleselect | removeformat | emoticons | forecolor | fontsizeselect | link uploadimage' ,
+
+  fontsize_formats: '8pt 9pt 10pt 11pt 12pt 14pt 18pt 24pt 36pt' ,
+
+  style_formats: [
+    {title: 'Inline', items: [
+      {title: '가나다', icon: 'bold', format: 'bold'},
+      {title: '가나다', icon: 'italic', format: 'italic'},
+      {title: '가나다', icon: 'underline', format: 'underline'},
+      {title: '가나다', icon: 'strikethrough', format: 'strikethrough'}
+    ]},
+    {title: 'Alignment', items: [
+      {title: '왼쪽 정렬', icon: 'alignleft', format: 'alignleft'},
+      {title: '중앙 정렬', icon: 'aligncenter', format: 'aligncenter'},
+      {title: '오른쪽 정렬', icon: 'alignright', format: 'alignright'},
+      {title: '양쪽 정렬', icon: 'alignjustify', format: 'alignjustify'}
+    ]}
+  ],
+
+});
+
+// 사이드 바 액티브 표시
+// http://foundation.zurb.com/forum/posts/42363-add-active-class-to-nav-dependent-on-page
+$(function() {
+   var pgurl = (window.location.href.split("/")[3]).split("?")[0];
+  //  console.log(pgurl);
+   $(".groupNav-active li a").each(function() {
+    //  console.log($(this).attr("href").split("/")[1]);
+      if ($(this).attr("href").split("/")[1] == pgurl || $(this).attr("href") == '')
+         $(this).addClass("active");
+   })
+});
+
+// 카테고리에 따라 form의 path를 다르게 설정
+$(".createPost").on("click", function(event){
+  var select = document.getElementById("crateCategory")
+  var getContent = tinyMCE.get('createContent').getContent()
+  var content = $(getContent).text()
+
+  if(content){
+    jumpForCreate(select)
+  }
+  else{
+    alert("글의 내용을 입력해주세요.")
+    return false;
+  }
+})
+
+$(".updatePost").on("click", function(){
+  var select = document.getElementById("updateCategory");
+  var getContent = tinyMCE.get('createContent').getContent()
+  var content = $(getContent).text()
+
+  if(content){
+    jumpForCreate(select)
+  }
+  else{
+    alert("글의 내용을 입력해주세요.")
+    return false;
+  }
+})
+
+
+var jumpForCreate = function(select){
+  var selectValue = select.options[ select.selectedIndex ].value
+
+  var newform = document.createForm;
+  if(selectValue == "자유게시판"){
+     newform.setAttribute("action", "/freeBoard")
+  }
+  else if(selectValue == "홍보게시판"){
+    newform.setAttribute("action", "/adBoard")
+  }
+  else if(selectValue == "질문게시판"){
+    newform.setAttribute("action", "/suggestion")
+  }
+  else{
+    alert("잘못된 카테고리 입니다.")
+    return false;
+  }
+}
+
+
+// 검색 카테고리에 따라 form의 path를 다르게 설정
+$(".searchPost").on("click", function(){
+  var select = document.getElementById("searchCategory")
+  var searchCategory = "<%=@searchCategory%>"
+
+  var selectValue = select.options[ select.selectedIndex ].value
+  var postName = $('input[name=searchPost]').val()
+  jumpForSearch(selectValue , postName)
+})
+
+var jumpForSearch = function(selectValue, postName){
+  var newform = document.searchForm;
+  newform.setAttribute("action", "")
+  if(selectValue == "자유게시판"){
+     newform.setAttribute("action", "/freeBoard/searchList/"+postName)
+  }
+  else if(selectValue == "홍보게시판"){
+    newform.setAttribute("action", "/adBoard/searchList/"+postName)
+  }
+  else if(selectValue == "질문게시판"){
+    newform.setAttribute("action", "/suggestion/searchList/"+postName)
+  }
+  else{
+    alert("잘못된 카테고리 입니다.")
+    return false;
+  }
+}
+
+
+</script>

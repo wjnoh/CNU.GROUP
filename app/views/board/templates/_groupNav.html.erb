@@ -1,0 +1,380 @@
+<section class="col-12 col-lg-3 pt-4">
+  <% if @belongsToMember %>
+    <div class="text-center mb-3">
+    <!-- 글쓰기 모달 트리거 -->
+      <button type="button" class="btn btn btn-outline-primary btn-lg btn-block" data-toggle="modal" data-target="#postWriteModal">
+        글쓰기</button>
+    </div>
+  <% end %>
+
+  <!-- 글쓰기 모달 -->
+  <div id="postWriteModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title"><span class="">글쓰기</span></h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3 w-100">
+            <%= form_tag("/post", multipart: true) do %>
+            <%= hidden_field_tag :boardID, "#{@boardID}" %>
+            <%= text_field_tag :createTitle , nil , class: "w-100 form-control mb-3" , placeholder: "제목을 입력하세요." , required: true , maxlength: "30" %>
+            <%= text_area_tag :createContent, nil , class: "tinymce" %>
+          </div>
+          <div class="row">
+            <div class="col-lg-6 col-12">
+              <div class="filebox mb-2 text-center d-flex justify-content-between">
+                <%= text_field_tag :nil , "파일선택 [50MB 이하]" , class: "upload-name file-select-style " , disabled: true %>
+                <%= label_tag :createFilename, "업로드" , class: "m-0 file-upload-style", disabled:"true" %>
+                <%= file_field_tag :createFilename ,  class: "upload-hidden" %>
+              </div>
+            </div>
+            <div class="col-lg-6 col-12">
+              <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn btn-outline-secondary file-upload-style" data-dismiss="modal">취소</button>
+                <%= submit_tag '올리기' , class: "btn btn-outline-primary ml-2 file-upload-style fileSizeAlert createPost" %>
+              </div>
+            </div>
+            <% end %>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 글수정 모달 -->
+  <div id="postUpdateModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title"><span class="">글 수정하기</span></h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3 w-100">
+            <%= form_tag("/post", method: :patch, multipart: true) do %>
+            <%= hidden_field_tag :boardID, "#{@boardID}" %>
+            <%= hidden_field_tag :postID, nil %>
+            <%= text_field_tag :updateTitle , nil , class: "w-100 form-control mb-3", required: true%>
+            <%= text_area_tag :updateContent, nil , class: "tinymce" %>
+          </div>
+          <div class="row">
+            <div class="col-lg-6 col-12">
+              <div class="haha filebox mb-2 text-center d-flex justify-content-between">
+                <%= text_field_tag :nil , "파일선택 [50MB 이하]" , class: "upload-name file-select-style" , disabled: true %>
+                <%= label_tag :updateFilename, "업로드" , class: "m-0 file-upload-style" %>
+                <%= file_field_tag :updateFilename,  class: "upload-hidden" %>
+              </div>
+            </div>
+            <div class="col-lg-6 col-12">
+              <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn btn-outline-secondary file-upload-style" data-dismiss="modal">취소</button>
+                <%= submit_tag '올리기' , class: "btn btn-outline-primary ml-2 file-upload-style updatePost fileSizeAlert updatePost" %>
+              </div>
+            </div>
+            <% end %>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <% unless @belongsToMember %>
+  <div class="text-center mb-3">
+  <!-- 신청 모달 트리거 -->
+    <% if @fullMember %>
+      <button type="button" class="btn btn btn-outline-secondary btn-lg btn-block">가입 신청 마감</button>
+    <% elsif @alreadyApply %>
+      <a href="/apply/<%=@applyID%>/self" data-confirm="모임 가입 신청을 취소하실 건가요?" data-method="delete" class="a-none">
+        <button type="button" class="btn btn btn-outline-secondary btn-lg btn-block" >가입 신청 취소</button>
+      </a>
+    <% else %>
+      <button type="button" class="btn btn btn-outline-secondary btn-lg btn-block" data-toggle="modal" data-target="#applyModal">가입 신청</button>
+    <% end %>
+  </div>
+  <% end %>
+
+  <!-- 신청 모달 -->
+  <div id="applyModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title"><span class="">모임 가입 신청서</span></h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <%= form_tag("/apply") do %>
+            <%= hidden_field_tag :boardID, "#{@boardID}" %>
+            <%= text_area_tag :message, nil, class: "form-control", rows: "5", required: true, placeholder: "모임장에게 보여지는 메시지입니다." %>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn btn-outline-secondary" data-dismiss="modal">취소</button>
+          <%= submit_tag '신청' , class: "btn btn-outline-primary" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 사이드 바  -->
+  <div class="card">
+    <div class="card-body">
+
+      <ul class="nav nav-pills flex-column groupNav-active">
+        <li class="nav-item">
+          <a class="nav-link a-color-black groupNav-active-search" href="/board/<%=@boardID%>/stream">스트림</a>
+        </li>
+        <% for i in 0..@board.accept_applies.length-1 %>
+          <% if @board.accept_applies[i].user == current_user %>
+            <li class="nav-item">
+              <a class="nav-link a-color-black" href="/board/<%=@boardID%>/notice">공지사항</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link a-color-black" href="/board/<%=@boardID%>/membersTimetable">시간표</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link a-color-black" href="/board/<%=@boardID%>/groupInfo">모임정보</a>
+            </li>
+            <% break %>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 모임 탈퇴 / 삭제  -->
+  <div class="info-display" style="display:none;">
+    <div class="text-center mt-3">
+      <a class="a-color-black" data-confirm="정말로 탈퇴하실 건가요?" href="/board/<%=@boardID%>/self" data-method="delete" >
+        <button type="button" class="btn btn-outline-secondary btn-block checkMaster">모임탈퇴</button>
+      </a>
+    </div>
+    <% if @boardMaster == current_user %>
+      <div class="text-center mt-3">
+        <a class="a-color-black" data-confirm="정말로 모임을 삭제하실 건가요?" href="/board/<%=@boardID%>" data-method="delete" >
+          <button type="button" class="btn btn-outline-secondary btn-block">모임삭제</button>
+        </a>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- 검색  -->
+  <% for i in 0..@board.accept_applies.length-1 %>
+    <% if @board.accept_applies[i].user == current_user %>
+      <%= form_tag("/board/#{@boardID}/searchList/", id: "searchListForm") do %>
+      <div class="d-flex justify-content-between mt-3">
+        <%= text_field_tag :searchPost, nil , class: "form-control" , placeholder: "제목" %>
+        <%= submit_tag '검색' , class: "btn btn btn-outline-secondary ml-2 searchPostSubmit" %>
+        <% end %>
+      </div>
+      <% break %>
+    <% end %>
+  <% end %>
+</section>
+
+
+
+<script>
+// 텍스트 편집기 tinymce 디자인
+tinymce.init({
+  selector: '#createContent, #updateContent',
+  language: 'ko_KR',
+  statusbar: false,
+  branding: false,
+  menubar: false,
+  height : 200 ,
+  toolbar_items_size: 'small',
+  content_style: "img {max-width: 80%; max-height: 80%;}",
+
+  plugins: "textcolor emoticons uploadimage",
+
+  toolbar: 'styleselect | removeformat | emoticons | forecolor | fontsizeselect | link uploadimage' ,
+
+  fontsize_formats: '8pt 9pt 10pt 11pt 12pt 14pt 18pt 24pt 36pt' ,
+
+  style_formats: [
+    {title: 'Inline', items: [
+      {title: '가나다', icon: 'bold', format: 'bold'},
+      {title: '가나다', icon: 'italic', format: 'italic'},
+      {title: '가나다', icon: 'underline', format: 'underline'},
+      {title: '가나다', icon: 'strikethrough', format: 'strikethrough'}
+    ]},
+    {title: 'Alignment', items: [
+      {title: '왼쪽 정렬', icon: 'alignleft', format: 'alignleft'},
+      {title: '중앙 정렬', icon: 'aligncenter', format: 'aligncenter'},
+      {title: '오른쪽 정렬', icon: 'alignright', format: 'alignright'},
+      {title: '양쪽 정렬', icon: 'alignjustify', format: 'alignjustify'}
+    ]}
+  ]
+
+});
+
+
+// 사이드 바 액티브 표시
+// http://foundation.zurb.com/forum/posts/42363-add-active-class-to-nav-dependent-on-page
+$(function() {
+   var pgurl = (window.location.href.split("/")[5]).split("?")[0];
+  //  console.log(pgurl);
+   $(".groupNav-active li a").each(function() {
+    //  console.log($(this).attr("href").split("/")[3]);
+      if ($(this).attr("href").split("/")[3] == pgurl || $(this).attr("href") == '')
+         $(this).addClass("active");
+   })
+
+   $(".groupNav-active-search").each(function() {
+    //  console.log($(this).attr("href").split("/")[3]);
+      if (pgurl == "searchList" || $(this).attr("href") == '')
+         $(this).addClass("active");
+   })
+});
+
+$(function() {
+   var pgurl = ((window.location.href) + "/").split("/")[6].split("?")[0];
+  //  console.log(pgurl);
+   $(".groupNav-active li a").each(function() {
+    //  console.log($(this).attr("href").split("/")[3]);
+      if ($(this).attr("href").split("/")[3] == pgurl || $(this).attr("href") == '')
+         $(this).addClass("active");
+   })
+});
+
+$(function() {
+  var groupurl = window.location.href.split("/")[5];
+  if ("groupInfo" == groupurl) $(".info-display").css("display" , "");
+});
+
+
+
+// 모임 탈퇴
+$(".checkMaster").on("click", function(e){
+  <% if @boardMaster == current_user %>
+    alert("마스터는 탈퇴할 수 없습니다. 다른 구성원에게 마스터를 양도해주세요.")
+    e.stopPropagation();
+    return false;
+  <% end %>
+})
+
+
+
+// 모달 초기화
+$('.modal').on('hide.bs.modal', function (e) {
+  $('#postWriteModal').find('form')[0].reset();
+  $('.upload-name').val("파일선택 [50MB 이하]");
+});
+
+$('.modal').on('hide.bs.modal', function (e) {
+  $('#applyModal').find('form')[0].reset();
+});
+
+
+// 게시글 수정 시
+function updatePost(paramPostID){
+  // tinymce 편집기에 원래 게시글 내용 출력
+  var originContent = '.updateContent_' + paramPostID;
+  var postContent = $(originContent).attr('value');
+  tinyMCE.activeEditor.setContent(postContent);
+
+  // 원래 게시글의 제목 출력
+  var originTitle = '.updateTitle_' + paramPostID;
+  var postTitle = $(originTitle).attr('value');
+  $('#updateTitle').val(postTitle)
+
+  // 컨트롤러에 넘겨줄 정보
+  $('#postID').val(paramPostID);
+}
+
+
+// 빈 내용의 게시글 전송 방지
+$(".createPost").on("click", function(event){
+  var getContent = tinyMCE.get('createContent').getContent()
+  var content = $(getContent).text()
+
+  if(!content){
+    alert("글의 내용을 입력해주세요.")
+    return false;
+  }
+})
+
+$(".updatePost").on("click", function(event){
+  var getContent = tinyMCE.get('updateContent').getContent()
+  var content = $(getContent).text()
+
+  if(!content){
+    alert("글의 내용을 입력해주세요.")
+    return false;
+  }
+})
+
+
+// 게시글 검색
+$(".searchPostSubmit").click(function(){
+  var postName = $('input[name=searchPost]').val()
+  if(postName.length < 2){
+    alert("두 글자 이상 입력해주세요.")
+    return false
+  }
+
+  // 기존의 form_tag의 action에 URI 파라미터를 넘기는 path로 변경
+  // (페이지를 나누면서 get방식전달 되는데, 검색 내용을 그대로 전달해주기 위함이다.)
+  var URITokens = document.getElementById("searchListForm").action.split("/")
+  var reqTokens = []
+  var index = 0;
+  for(var i = 3; i <= URITokens.length-2; i++){
+    reqTokens[index] = URITokens[i];
+    index++;
+  }
+  var reqURL = "/" + reqTokens.join("/") + "/" +postName
+
+  document.getElementById("searchListForm").setAttribute("action", reqURL);
+})
+
+
+
+// 파일 업로드 출력
+$('.upload-hidden').change(function() {
+    var filename = $(this).val();
+    var lastIndex = filename.lastIndexOf("\\");
+    if (lastIndex >= 0) {
+        filename = filename.substring(lastIndex + 1);
+    }
+    $('.upload-name').val(filename);
+});
+
+
+// 글 작성시 파일의 용량 제한
+$("#createFilename").on("change", function(){
+  var fileSize = document.getElementById("createFilename").files[0].size
+  var convertToMB = fileSize/1024/1024
+  if(convertToMB > 50){
+    alert("파일의 크기는 50MB를 초과할 수 없습니다.")
+    $(".fileSizeAlert").attr("disabled",true)
+  }else{
+    $(".fileSizeAlert").attr("disabled",false)
+  }
+})
+
+// 글 수정시 파일의 용량 제한
+$("#updateFilename").on("change", function(){
+  var fileSize = document.getElementById("updateFilename").files[0].size
+  var convertToMB = fileSize/1024/1024
+  if(convertToMB > 50){
+    alert("파일의 크기는 50MB를 초과할 수 없습니다.")
+    $(".fileSizeAlert").attr("disabled",true)
+  }else{
+    $(".fileSizeAlert").attr("disabled",false)
+  }
+})
+
+
+</script>

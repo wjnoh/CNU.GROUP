@@ -1,0 +1,52 @@
+<nav class="navbar footer-style d-flex justify-content-center" id="footer">
+  <a class="navbar-brand m-0" data-toggle="popover" style="cursor:pointer;">
+    <div class="d-flex align-items-center">
+      ⓒ 2017 teamRQ & LIKELION CNU
+    </div>
+  </a>
+  <div class="go-top">
+    <a href="#" class="a-color-black"><i class="fa fa-chevron-circle-up fa-2x" style="font-size:2.3rem;" aria-hidden="true"></i></a>
+  </div>
+</nav>
+
+<script>
+$(document).ready(function() {
+  // Show or hide the sticky footer button
+  $(window).scroll(function() {
+    if ($(this).scrollTop() > 500) {
+      $('.go-top').fadeIn(300);
+    } else {
+      $('.go-top').fadeOut(300);
+    }
+  });
+
+  // Animate the scroll to top
+  $('.go-top').click(function(event) {
+    event.preventDefault();
+
+    $('html, body').animate({scrollTop: 0}, 500);
+  })
+});
+
+
+// 팀 설명 popover
+$(document).ready(function(){
+  $('[data-toggle="popover"]').popover({
+    placement : 'top',
+	  trigger : 'hover',
+    offset : '0 30%',
+    html : true,
+    content : '<div class="media d-flex align-items-center">'+
+                '<a class="mr-3" title="이우승">'+
+                  '<img src="http://thumbnail.egloos.net/600x0/http://pds27.egloos.com/pds/201709/10/70/c0116970_59b4cfbb9714c.jpg" class="media-object rounded-circle footer-profile">'+
+                '</a>'+
+                '<a class="mr-3" title="노우제">'+
+                  '<img src="http://pds21.egloos.com/pds/201709/10/70/c0116970_59b4cfc6c5166.jpg" class="media-object rounded-circle footer-profile">'+
+                '</a>'+
+                '<a class="" title="박한울">'+
+                  '<img src="http://pds25.egloos.com/pds/201709/10/70/c0116970_59b4cfcaec30a.jpg" class="media-object rounded-circle footer-profile">'+
+                '</a>'+
+              '</div>'
+  });
+});
+</script>

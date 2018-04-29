@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  post: one
+  replyWriter: MyString
+  replyContent: MyText
+
+two:
+  post: two
+  replyWriter: MyString
+  replyContent: MyText

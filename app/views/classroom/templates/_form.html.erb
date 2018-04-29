@@ -1,0 +1,57 @@
+<div class="row">
+  <div class="col-12 col-md-4">
+    <select class="form-control select-room" id="collegeSelect" name="college">
+      <option>경E</option>
+      <option>경N</option>
+      <option>경S</option>
+      <option>공1</option>
+      <option>공2</option>
+      <option>공3</option>
+      <option>공4</option>
+      <option>공5</option>
+      <option>교</option>
+      <option>글로벌</option>
+      <option>기1</option>
+      <option>기2</option>
+      <option>농1</option>
+      <option>농2</option>
+      <option>농3</option>
+      <option>다2</option>
+      <option>동물</option>
+      <option>미</option>
+      <option>사강</option>
+      <option>사범</option>
+      <option>사</option>
+      <option>산학연</option>
+      <option>수</option>
+      <option>생명</option>
+      <option>생</option>
+      <option>약</option>
+      <option>예디자</option>
+      <option>음1</option>
+      <option>음2</option>
+      <option>인</option>
+      <option>자1</option>
+      <option>자2</option>
+    </select>
+  </div>
+  <div class="col-12 col-md-4">
+    <select class="form-control select-room" id="daySelect" name="day">
+      <option>월요일</option>
+      <option>화요일</option>
+      <option>수요일</option>
+      <option>목요일</option>
+      <option>금요일</option>
+      <option>토요일</option>
+    </select>
+  </div>
+  <div class="col-12 col-md-4">
+    <select class="form-control select-room" id="classRoomSelect" name="classRoom">
+      <option>모든 강의실</option>
+      <option>빈 강의실</option>
+      <% @classRooms.each do |t| %>
+      <option><%= t.classRoomName %></option>
+      <% end %>
+    </select>
+  </div>
+</div>

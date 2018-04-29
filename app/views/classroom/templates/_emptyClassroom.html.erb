@@ -1,0 +1,17 @@
+<% @hashCheckClassAndTimes.each { |key , values| %>
+  <% if key.include? "(수업중)" %>
+    <% next %>
+  <% end %>
+
+  <div class="col-lg-4 col-md-6 col-12">
+    <div class="card text-center">
+
+      <div class="card-header">
+        <span style="color:green;"><%= key %></span>
+      </div>
+
+      <%= render "classroom/templates/printModule", key: key, values: values %>
+
+    </div><br>
+  </div>
+<% } %>

@@ -1,0 +1,43 @@
+<div class="col-lg-4 col-md-6 col-12">
+  <div class="card text-center">
+
+    <div class="card-header">
+      <% if @hashCheckClassAndTimes.has_key?("#{@currentClassRoomValue}") %>
+        <span style="color:green;"><%= @currentClassRoomValue %></span>
+      <% else %>
+        <span style="color:red;"><%= @currentClassRoomValue %>(수업중)</span>
+      <% end %>
+    </div>
+
+    <div class="card-body">
+      <% @hashClassAndTimes["#{@currentClassRoomValue}"].each do |t| %>
+        <%= t %><br/>
+      <% end %>
+    </div>
+
+    <div class="card-footer">
+      <div class="card-emptyCheckClassRoomster">
+        <% @hashClassAndRemainTime.keys.each do |key| %>
+          <% if key.include? @currentClassRoomValue %>
+            <% if @hashClassAndRemainTime[key].nil? %>
+              <span>오늘은 더이상 수업이 없습니다.</span>
+            <% else %>
+              <% if @hashClassAndRemainTime[key][0] == 0 %>
+                <span>
+                다음 수업까지<br><%=@hashClassAndRemainTime[key][1]%>분 남았습니다.
+                </span>
+              <% else %>
+                <span>
+                  다음 수업까지<br><%=@hashClassAndRemainTime[key][0]%>시간
+                  <%=@hashClassAndRemainTime[key][1]%>분 남았습니다.
+                </span>
+              <% end %>
+            <% end %>
+          <% break %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+  </div><br>
+</div>

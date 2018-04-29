@@ -1,0 +1,167 @@
+<%= render "templates/navbar" %>
+<div class="wrapper">
+
+  <!-- 메인사진 -->
+  <header class="w-100" style="background-image: url('http://pds27.egloos.com/pds/201712/23/70/c0116970_5a3dfc64dc50f.jpg');">
+    <div class="container h-100 d-flex flex-column justify-content-center">
+      <h2 class="font-weight-thin">익명게시판</h2>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <!-- 좌측 영역 -->
+      <div class="col-12 col-lg-3 pt-4">
+        <%= render "anony/category" %>
+      </div>
+
+      <!-- 우측 영역 -->
+      <div class="col-12 col-lg-9 pt-4">
+        <% @posts.each do |post| %>
+        <div id="accordion" role="tablist" aria-multiselectable="true">
+          <div class="card mb-3">
+            <!-- 게시글 헤더 -->
+            <span class="a-color-black" style="cursor:pointer" data-toggle="collapse" data-parent="#accordion" href="#collapseOne_<%=post.id%>" aria-expanded="true" aria-controls="collapseOne_<%=post.id%>">
+              <div class="card-header background-color-white pt-3 pb-3 d-flex justify-content-between align-items-center" role="tab" id="headingOne">
+                <!-- 제목/작성자/작성일 -->
+                <div class="d-flex align-items-center">
+                  <%= image_tag('profile/anony.png', class: 'rounded-circle profile-button-style profile-picture-style') %>
+                  <div class="ml-1">
+
+                    <% if post.id == @choosenPostID %>
+                    <div class="post-title-style" style="background-color:yellow; width: fit-content;">
+                      <%= post.title %>
+                      <% if post.replies.length != 0 %>
+                      <span style="font-size:0.95rem;">(<%= post.replies.length %>)</span>
+                      <% end %>
+                    </div>
+                    <% else %>
+                    <div class="post-title-style">
+                      <%= post.title %>
+                      <% if post.replies.length != 0 %>
+                      <span style="font-size:0.95rem;">(<%= post.replies.length %>)</span>
+                      <% end %>
+                    </div>
+                    <% end %>
+
+                    <span class="day-text-style">
+                      <%= post.writer %> /
+                      <%= (post.created_at).to_s.slice(5..6) + "월 " + (post.created_at).to_s.slice(8..9) + "일" %>
+                    </span>
+                  </div>
+                </div>
+
+                <!-- 수정/삭제 -->
+                <% if post.user == current_user %>
+                <div class="dropdown">
+                  <a class="btn btn btn-outline-secondary board-button-style" href="#" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-ellipsis-v fa-lg" aria-hidden="true"></i>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-right board-dropdown-style" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" onclick="updatePost(<%=post.id%>)" data-toggle="modal" data-target="#postUpdateModal" href="#">수정</a>
+                    <input class="updateContent_<%=post.id%>" type="hidden" value="<%= post.content %>">
+                    <input class="updateWriter_<%=post.id%>" type="hidden" value="<%= post.writer%>">
+                    <input class="updateTitle_<%=post.id%>" type="hidden" value="<%= post.title %>">
+                    <input class="updateCategory_<%=post.id%>" type="hidden" value="<%= post.category %>">
+
+                    <div class="dropdown-divider"></div>
+
+                    <% if post.category == "자유게시판" %>
+                    <a class="dropdown-item" href="/freeBoard/<%=post.id %>" data-method="delete">삭제</a>
+                    <% elsif post.category == "홍보게시판" %>
+                    <a class="dropdown-item" href="/adBoard/<%=post.id %>" data-method="delete">삭제</a>
+                    <% else %>
+                    <a class="dropdown-item" href="/suggestion/<%=post.id %>" data-method="delete">삭제</a>
+                    <% end %>
+                  </div>
+                </div>
+                <% end %>
+              </div>
+            </span>
+
+
+            <div id="collapseOne_<%=post.id%>" class="collapse" role="tabpanel" aria-labelledby="headingOne">
+              <!-- 게시글 내용 -->
+              <div class="card-body pt-2 pb-2">
+                <p></p>
+                <%= raw post.content %>
+              </div>
+
+              <!-- 댓글 -->
+              <div class="card-footer">
+                <!-- 댓글 더보기 버튼 -->
+                <div class="mb-3 showReply<%=post.id%>" style="cursor:pointer">
+                  <a class="a-hover-blue showOrHide<%=post.id%>">댓글
+                    <%= post.replies.length-1 %>개 더 보기</a>
+                  <a class="a-hover-blue fold<%=post.id%>" style="display:none">댓글 접기</a>
+                </div>
+
+                <!-- 댓글 출력 -->
+                <div class="reply_<%=post.id%>" id="<%=post.id%>">
+                  <% for i in 0..(post.replies.length-1) %>
+                    <% reply = Reply.find(post.replies[i].id) %>
+
+                    <% if i == post.replies.length-1 %>
+                      <div class="showMe<%=post.id%>">
+                    <% else %>
+                      <div class="hideMe<%=post.id%>">
+                    <% end %>
+
+                    <% if !current_user.nil? && current_user.id == reply.user.id %>
+                      <button type="button" class="close destroyReply" aria-label="Close" id="<%=post.replies[i].id%>" name="<%=post.id%>">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    <% end %>
+
+                      <p class="mb-2">
+                        <%= post.replies[i].replyWriter %>
+                        <span class="day-text-style ml-2"><%= (post.replies[i].created_at).to_s.slice(5..6) + "월 " + (post.replies[i].created_at).to_s.slice(8..9) + "일" %></span>
+                      </p>
+                      <p class="mb-0">
+                        <%= post.replies[i].replyContent %>
+                      </p>
+                      <hr>
+                    </div>
+                  <% end %>
+                </div>
+
+                <!-- 댓글 작성 -->
+                <%= form_with(url: '/post/reply') do |f| %>
+                <%= hidden_field_tag :postID, "#{post.id}" %>
+                <%= hidden_field_tag :category, "#{post.category}" %>
+                <div class="row">
+                  <div class="col-12 col-lg-10 reply-form-padding">
+                    <%= text_field_tag :replyContent, nil , class: "form-control reply-style" ,placeholder: "댓글을 작성하세요.", required: true %>
+                  </div>
+                  <div class="col-12 col-lg-2 reply-button-padding reply-button-margin">
+                    <% if current_user.nil? %>
+                    <button class="btn btn btn-outline-secondary w-100" onclick="location.href='/users/sign_in'">작성</button>
+                    <% else %>
+                    <%= submit_tag '작성' , class: "btn btn btn-outline-secondary w-100" %>
+                    <% end %>
+                  </div>
+                </div>
+                <% end %>
+              </div>  <!-- 댓글 끝 -->
+            </div>
+
+          </div>
+        </div>
+      <% end %>
+
+      <div class="d-flex justify-content-center pt-2">
+        <div class="digg_pagination">
+          <%= will_paginate @posts, :container => false, inner_window: 1, outer_window: 0 %>
+        </div>
+      </div>
+
+      </div> <!-- 우측영역 끝 -->
+    </div>
+  </div>
+</div>
+
+
+<%= render "templates/footer" %>
+
+<!-- JS 코드  -->
+<%= render "board/templates/postsJS" %>

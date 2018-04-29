@@ -1,0 +1,184 @@
+<div class="card mb-1">
+  <div class="card-body pb-0">
+    <div class="text-center mb-4">
+      <% if user_signed_in? %>
+        <a data-toggle="modal" data-target="#changeImageModal" href="#" style="outline:none;">
+          <%= image_tag(current_user.profile_picture, class: 'rounded-circle profile-picture-style', width:'150', height:'150',  title: '프로필 사진 변경') %>
+        </a>
+        <div id="changeImageModal" class="modal fade" role="dialog">
+          <div class="modal-dialog modal-sm">
+            <div id="insertUploadInput" class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title"><span class="">프로필 사진 변경</span></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <!-- 프로필 -->
+              <div class="modal-body">
+                <%= form_tag("/home/profileImg", method: :patch, multipart: true) do %>
+                <div class="row">
+                  <div class="col-lg-12 d-flex align-items-center">
+                    <div class="filebox w-100 d-flex justify-content-between">
+                      <%= text_field_tag :nil , "사진" , class: "upload-name file-select-style mr-2" , disabled: true %>
+                      <%= label_tag :fileName, "선택" , class: "m-0 file-upload-style" %>
+                      <%= file_field_tag :fileName ,  class: "upload-hidden" %>
+                    </div>
+                  </div>
+                  <div class="col-lg-12 d-flex align-items-center mt-2">
+                    <%= submit_tag '선택한 사진으로 변경' , class: "btn btn-outline-primary w-100 submitClick"%>
+                  </div>
+                </div>
+                <% end %>
+
+                <%= form_tag("/home/basicImg", method: :patch, multipart: true) do %>
+                <div class="col-lg-12 d-flex align-items-center mt-2 p-0">
+                  <button class="btn btn btn-outline-secondary w-100" onclick="viewProfileClick()">기본 사진으로 변경</button>
+                  <%= hidden_field_tag :profileURL, nil %>
+                </div>
+                <% end %>
+              </div>  <!-- 프로필 끝 -->
+
+            </div>
+          </div>
+        </div>
+        <h5 class="mt-3"><%= current_user.name %>님 <%= @sayhello %></h5>
+
+      <% else %>
+      <!-- 로그인 창 시작 -->
+      <div class="d-flex justify-content-between">
+        <div class="w-100">
+        <%= form_for(:user, :url => session_path(:user)) do |f| %>
+          <div class="">
+            <%= f.text_field :email, placeholder: '이메일', class: 'form-control no-border-radius login-border-style', style: 'border-bottom: 0 !important' %>
+            <%= f.password_field :password, placeholder: '비밀번호', class: 'form-control no-border-radius login-border-style passwordPress' %>
+          </div>
+        </div>
+        <div class="">
+          <%= f.submit '로그인', class: "btn btn btn-outline-secondary main-login-button-style no-border-radius login-border-style", style: 'border-left: 0 !important' %>
+        </div>
+      </div>
+      <div class="day-text-style mt-2">
+        <div class="float-left mb-2">
+          <span class="capsLockView" style="color:red; display: none;">Caps Lock is ON</span>
+        </div>
+        <div class="float-right mb-2">
+          <a href="/users/sign_up" class="a-color-black a-hover-blue mr-2">회원가입</a>|
+          <a href="/users/password/new" class="a-color-black a-hover-blue ml-1">비밀번호 재설정</a>
+        </div>
+      </div>
+        <% end %>
+      <!-- 로그인 창 끝 -->
+      <% end %>
+    </div>
+
+    <% if user_signed_in? %>
+    <hr/>
+    <li class="list-group-item mb-3">
+
+      <div class="w-100 d-flex justify-content-between">
+      <% if @userNotices.length == 0 %>
+        <span>알림이 없습니다.</span>
+        <div class="d-flex align-items-center">
+          <% unless current_user.receiveNotice %>
+          <div class="noticeShow">
+            <a class="a-color-black a-hover-blue" style="cursor:pointer;" href='/home/news/on' data-method="patch">알림 켜기</a>
+          </div>
+          <% end %>
+          <span class="badge badge-primary ml-3"><%= @userNotices.length %></span>
+        </div>
+      <% else %>
+      <% if current_user.receiveNotice %>
+      <div class="noticeShowOrHide noticeShow">
+        <a class="a-hover-blue" style="cursor:pointer;">알림이 있습니다.</a>
+      </div>
+      <% else %>
+      <div class="">
+        <a class="" style="">알림이 꺼져있습니다.</a>
+      </div>
+      <% end %>
+        <a class="noticeShowOrHide noticeHide a-hover-blue" style="display:none; cursor:pointer;">알림 접기</a>
+        <div class="d-flex align-items-center">
+          <div class="noticeShow">
+            <% if current_user.receiveNotice %>
+            <a class="a-color-black a-hover-blue" style="cursor:pointer;" href='/home/news/off' data-method="patch">알림 끄기</a>
+            <% else %>
+            <a class="a-color-black a-hover-blue" style="cursor:pointer;" href='/home/news/on' data-method="patch">알림 켜기</a>
+            <% end %>
+          </div>
+          <a class="a-color-black noticeHide a-hover-blue" style="display:none; cursor:pointer;" href='/home/news' data-method="delete">알림 초기화</a>
+          <span class="badge badge-primary ml-3"><%= @userNotices.length %></span>
+        </div>
+      </div>
+      <% end %>
+      <div class="mt-3" style="display:none" id="noticeList">
+        <% @userNotices.each do |notice| %>
+          <p class="mb-2 pt-2" style="font-size:0.9rem; border-top:0.01rem solid rgba(0, 0, 0, .600)"><%= raw notice.message %></p>
+        <% end %>
+      </div>
+    </li>
+    <% end %>
+
+  </div>
+</div>
+
+<% unless user_signed_in? %>
+<!-- 모임 수 카운트 -->
+<div class="card mt-4">
+  <div class="card-body">
+    <div class="text-center">
+      지금 <span class="count"><%= @allPostCount %></span>개의 모임이<br/>당신을 기다리고 있습니다!
+    </div>
+  </div>
+</div>
+<% end %>
+
+
+<script>
+  var viewProfileClick = function(){
+    var gender = "<%= @user.gender unless @user.nil? %>"
+    var profileURL = setURL(gender);
+    $("#profileURL").attr("value", profileURL)
+
+  }
+
+  var setURL = function(gender){
+    var profileURL
+    var profileRandomNumber
+    if(gender === "남"){
+      var arr = Array(10)
+      profileRandomNumber = Math.floor(Math.random() * arr.length)
+
+      arr[0] = "/assets/profile/boy-1.png";
+      arr[1] = "/assets/profile/boy-2.png";
+      arr[2] = "/assets/profile/boy-3.png";
+      arr[3] = "/assets/profile/boy-4.png";
+      arr[4] = "/assets/profile/boy-5.png";
+      arr[5] = "/assets/profile/boy-7.png";
+      arr[6] = "/assets/profile/boy-17.png";
+      arr[7] = "/assets/profile/boy-12.png";
+      arr[8] = "/assets/profile/boy-20.png";
+      arr[9] = "/assets/profile/boy-9.png";
+
+      profileURL = arr[profileRandomNumber]
+    }
+    else{
+      var arr = Array(10)
+      profileRandomNumber = Math.floor(Math.random() * arr.length)
+
+      arr[0] = "/assets/profile/girl-4.png";
+      arr[1] = "/assets/profile/girl-8.png";
+      arr[2] = "/assets/profile/girl-16.png";
+      arr[3] = "/assets/profile/girl-9.png";
+      arr[4] = "/assets/profile/girl-6.png";
+      arr[5] = "/assets/profile/girl-3.png";
+      arr[6] = "/assets/profile/girl-24.png";
+      arr[7] = "/assets/profile/girl-26.png";
+      arr[8] = "/assets/profile/girl-13.png";
+      arr[9] = "/assets/profile/girl-14.png";
+
+      profileURL = arr[profileRandomNumber]
+    }
+    return profileURL;
+  }
+</script>

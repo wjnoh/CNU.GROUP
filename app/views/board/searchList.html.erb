@@ -1,0 +1,46 @@
+2017년 12월 22일 금요일
+[우제] [오후 6:22] 출발하시면 말좀
+[우제] [오후 6:22] 이미했나 ㅎㅅㅎ
+[이우승] [오후 6:23] ㅋㅋㅋㅋ 30분에 출방하겠음
+[우제] [오후 6:23] 오킹ㅇㅋㅋ
+[이우승] [오후 6:31] 이제나감 ㅇㅅㅇ
+[우제] [오후 6:32] 야스야스
+2017년 12월 23일 토요일
+[이우승] [오후 3:03] [FILE] projectRQ.zip (58.46MB)
+[이우승] [오후 3:19] [FILE] 사진.zip (6.79MB)
+[우제] [오후 5:24] [FILE] projectRQ.zip (56.72MB)
+[우제] [오후 5:47] <%= render "templates/navbar" %>
+
+<div class="wrapper">
+  <!-- 메인사진 -->
+  <%= render "/board/templates/header" %>
+
+  <div class="container">
+    <div class="row">
+      <!-- 좌측 영역 -->
+      <%= render "board/templates/groupNav" %>
+
+      <!-- 우측 영역 -->
+      <% if @posts.empty? %>
+
+        <div class="pt-4 ml-4">
+          <p>
+          "<span style="color:red;"><%= @searchContent %></span>"에 대한 검색 결과가 없습니다.
+          </p>
+          검색하신 단어가 맞는지 다시 한번 확인해주세요.<br>
+          띄어쓰기를 다시 한 번 확인해주세요.<br>
+          제목으로만 검색이 가능합니다.
+        </div>
+
+      <% else %>
+        <%= render "board/templates/posts" %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<%= render "templates/footer" %>
+
+
+<!-- JS 코드  -->
+<%= render "board/templates/postsJS" %>

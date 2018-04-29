@@ -1,0 +1,41 @@
+<% if @board.category == "스터디" %>
+<a class="a-none" href="/board/<%= @boardID %>/stream">
+  <header class="w-100" style="background-image: url('http://pds26.egloos.com/pds/201712/23/70/c0116970_5a3df95e14881.jpg');">
+    <div class="container h-100 d-flex flex-column justify-content-center">
+      <h2 class="font-weight-thin"><%=@boardTitle%></h2>
+    </div>
+  </header>
+</a>
+<% elsif @board.category == "운동" %>
+<a class="a-none" href="/board/<%= @boardID %>/stream">
+  <header class="w-100" style="background-image: url('http://pds26.egloos.com/pds/201712/23/70/c0116970_5a3df94d7a2f8.jpg');">
+    <div class="container h-100 d-flex flex-column justify-content-center">
+      <h2 class="font-weight-thin"><%=@boardTitle%></h2>
+    </div>
+  </header>
+</a>
+<% elsif @board.category == "취미" %>
+<a class="a-none" href="/board/<%= @boardID %>/stream">
+  <header class="w-100" style="background-image: url('http://pds26.egloos.com/pds/201712/23/70/c0116970_5a3df953e0fe8.jpg');">
+    <div class="container h-100 d-flex flex-column justify-content-center">
+      <h2 class="font-weight-thin"><%=@boardTitle%></h2>
+    </div>
+  </header>
+</a>
+<% elsif @board.category == "사교" %>
+<a class="a-none" href="/board/<%= @boardID %>/stream">
+  <header class="w-100" style="background-image: url('http://pds27.egloos.com/pds/201712/23/70/c0116970_5a3df958ce074.jpg');">
+    <div class="container h-100 d-flex flex-column justify-content-center">
+      <h2 class="font-weight-thin"><%=@boardTitle%></h2>
+    </div>
+  </header>
+</a>
+<% elsif @board.category == "자유주제" %>
+<a class="a-none" href="/board/<%= @boardID %>/stream">
+  <header class="w-100" style="background-image: url('http://pds26.egloos.com/pds/201712/23/70/c0116970_5a3df9514b4fc.jpg');">
+    <div class="container h-100 d-flex flex-column justify-content-center">
+      <h2 class="font-weight-thin"><%=@boardTitle%></h2>
+    </div>
+  </header>
+</a>
+<% end %>

@@ -1,0 +1,168 @@
+<%= render "templates/navbar" %>
+<div class="wrapper">
+
+  <!-- 메인사진 -->
+  <header class="w-100" style="background-image: url('http://pds27.egloos.com/pds/201712/23/70/c0116970_5a3df9566f015.jpg');">
+    <div class="container h-100 d-flex flex-column justify-content-center">
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <!-- 좌측 영역 -->
+      <div class="col-lg-4 col-12 leftnav pt-4 pb-0">
+        <%= render "home/templates/sidebar" %>
+      </div>
+
+      <!-- 우측 영역 -->
+      <div class="col-lg-8 col-12 leftnav pt-4 pb-2">
+        <!-- 탭 목록 -->
+        <ul class="nav nav-pills d-flex justify-content-center main-nav-custom" role="tablist">
+          <li class="nav-item">
+            <% if user_signed_in? %>
+              <a class="nav-link active nav-link-custom a-color-black" data-toggle="tab" href="#group" role="tab">내 모임</a>
+            <% else %>
+              <a class="nav-link nav-link-custom a-color-black" data-toggle="tab" href="#group" role="tab">내 모임</a>
+            <% end %>
+          </li>
+          <li class="nav-item">
+            <% if user_signed_in? %>
+              <a class="nav-link nav-link-custom a-color-black" data-toggle="tab" href="#find" role="tab">모임 찾기</a>
+            <% else %>
+              <a class="nav-link active nav-link-custom a-color-black" data-toggle="tab" href="#find" role="tab">모임 찾기</a>
+            <% end %>
+          </li>
+        </ul>
+
+        <!-- 탭 내용 -->
+        <!-- 내 모임  -->
+        <div class="tab-content">
+        <% if user_signed_in? %>
+          <div class="tab-pane active" id="group" role="tabpanel">
+        <% else %>
+          <div class="tab-pane" id="group" role="tabpanel">
+        <% end %>
+            <!-- 모임 추가 버튼 / 모달 , 참여하고 있는 모임 목록-->
+            <%= render "home/templates/myGroup" %>
+          </div>
+
+        <!-- 모임 찾기 -->
+        <% if user_signed_in? %>
+          <div class="tab-pane" id="find" role="tabpanel">
+        <% else %>
+          <div class="tab-pane active" id="find" role="tabpanel">
+        <% end %>
+            <!-- 모임 찾기 버튼 / 모달 -->
+            <%= render "home/templates/searchGroup" %>
+          </div>
+
+        </div>  <!-- 탭 내용 끝 -->
+      </div>  <!-- 우측 영역 끝 -->
+    </div>
+  </div>
+</div>
+
+<%= render "templates/footer" %>
+
+<script>
+$(function() {
+  $('.searchBoard').click(function(event){
+    var boardName = $('input[name=searchBoardName]').val()
+
+    if( boardName.length < 2 ) {
+       alert("두 글자 이상 입력해주세요.")
+       event.preventDefault();
+    }
+  });
+});
+
+// 모달 초기화
+$('.modal').on('hidden.bs.modal', function (e) {
+  $(this).find('form')[0].reset()
+});
+
+// masonry
+var $container = $('.grid');
+  $container.masonry({
+    itemSelector: '.grid-item',
+    columnWidth: '.grid-sizer',
+    gutter: '.gutter-sizer',
+    percentPosition: true,
+    transitionDuration: 0
+});
+
+// masonry 탭 클릭했을 때
+$('a[data-toggle=tab]').each(function () {
+  var $this = $(this);
+  $this.on('shown.bs.tab', function () {
+    $container.masonry({
+      itemSelector: '.grid-item',
+      columnWidth: '.grid-sizer',
+      gutter: '.gutter-sizer',
+      percentPosition: true,
+      transitionDuration: 0
+    });
+  });
+});
+
+// 모임 개수 체크
+$(".createBoard").click(function(){
+  var userBoardCount = "<%= @userBoardCount %>";
+  if(userBoardCount >= 7){
+    alert("모임은 최대 7개만 가질 수 있습니다.")
+    return false;
+  }
+
+  var selected = $(".category").val();
+  if(selected === "모임 관심사"){
+    alert("관심사를 선택해주세요.")
+    return false;
+  }
+
+})
+
+// 숫자 카운트
+$('.count').each(function () {
+    $(this).prop('Counter',0).animate({
+        Counter: $(this).text()
+    }, {
+        duration:2300,
+        easing: 'swing',
+        step: function (now) {
+            $(this).text(Math.ceil(now));
+        }
+    });
+});
+
+// 알림 토글
+$(".noticeShowOrHide").click(function () {
+  $("#noticeList").slideToggle();
+  $(".noticeShow").toggle();
+  $(".noticeHide").toggle();
+});
+
+
+// 회원 프로필 사진 글자 체크
+  $(".submitClick").click(function(){
+    var fileName = $('input[name=fileName]').val()
+    if(fileName == ""){
+      alert("파일을 선택해주세요.")
+      return false;
+    }
+  })
+
+// 파일 업로드 출력
+$('.upload-hidden').change(function() {
+    var filename = $(this).val();
+    var lastIndex = filename.lastIndexOf("\\");
+    if (lastIndex >= 0) {
+        filename = filename.substring(lastIndex + 1);
+    }
+    $('.upload-name').val(filename);
+});
+
+</script>
+
+
+<!-- capsLock JS  -->
+<%= render "templates/capsLockJS" %>

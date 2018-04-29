@@ -1,0 +1,53 @@
+<div class="search-scroll-div">
+  <table class="table table-sm w-100">
+    <thead>
+      <tr class="">
+        <td>이름</td>
+        <td style="width: 25%;">관심사</td>
+        <td style="width: 25%;">인원</td>
+      </tr>
+    </thead>
+    <% unless @boards.nil? %>
+      <% @boards.each do |board| %>
+      <tbody>
+        <tr>
+          <td><a class="a-none" href="/board/<%=board.id%>/stream"><%= board.title %></a></td>
+          <td><%= board.category %></td>
+          <td>
+            <!-- 로그인 안한 상태 -->
+            <% if current_user.nil? %>
+              <%= board.memberCount %> / <%=board.totalNumberOfMember%>
+              <% next %>
+            <% end %>
+
+            <!-- 로그인 한 상태 -->
+            <% if @fullMember.include? board.id %>
+              <!-- <a class="a-none" data-toggle="tooltip" data-placement="right" title="마감"> -->
+                <span style="color:red;"><%= board.memberCount %> / <%=board.totalNumberOfMember%></span>
+              <!-- </a> -->
+            <% elsif @applies.include? board.id %>
+              <!-- <a class="a-none" data-toggle="tooltip" data-placement="right" title="가입대기"> -->
+                <span style="color:orange;"><%= board.memberCount %> / <%=board.totalNumberOfMember%></span>
+              <!-- </a> -->
+            <% elsif @acceptApplies.include? board.id %>
+              <!-- <a class="a-none" data-toggle="tooltip" data-placement="right" title="참여중"> -->
+                <span style="color:gray;"><%= board.memberCount %> / <%=board.totalNumberOfMember%></span>
+              <!-- </a> -->
+            <% else %>
+              <!-- <a class="a-none" data-toggle="tooltip" data-placement="right" title="참여가능"> -->
+                <span style="color:blue;"><%= board.memberCount %> / <%=board.totalNumberOfMember%></span>
+              <!-- </a> -->
+            <% end %>
+          </td>
+        </tr>
+      </tbody>
+      <% end %>
+    <% end %>
+  </table>
+</div>
+
+<script>
+// $(function () {
+//     $('[data-toggle="tooltip"]').tooltip();
+// });
+</script>

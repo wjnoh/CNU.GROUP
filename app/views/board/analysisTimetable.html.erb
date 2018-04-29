@@ -1,0 +1,22 @@
+<div class="container">
+    <!-- 우측 영역 -->
+    <%= render "board/templates/analysisTimetable/result" %>
+</div>
+
+<script>
+  <% @a.each do |i| %>
+    <% @timetable.each do |tt| %>
+      if (<%= tt.id %>==<%= i %>){
+        <% tt.ttcells.each do |c| %>
+          $('#<%= c.cellId %>').addClass('dropped');
+        <% end %>
+      } else { }
+    <% end %>
+  <% end %>
+</script>
+
+<style>
+.dropped, tr {
+  border: none;
+}
+</style>

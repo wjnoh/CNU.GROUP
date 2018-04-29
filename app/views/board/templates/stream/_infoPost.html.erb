@@ -1,0 +1,89 @@
+<section class="col-12 col-lg-9 pt-4" id="section">
+
+  <div class="card mb-4" id="post">
+    <!-- 포스트 헤더 정보 -->
+    <div class="card-header background-color-white d-flex justify-content-between align-items-center pt-3 pb-3">
+      <div class="d-flex align-items-center">
+        <img class="rounded-circle profile-button-style" src="<%= @infoPost.user.profile_picture %>" aria-hidden="true">
+        <div class="ml-1">
+          <div class="post-title-style">
+            <%= @infoPost.title %>
+          </div>
+          <span class="day-text-style">
+            <%= @infoPost.writer %> /
+            <%= (@infoPost.created_at).to_s.slice(5..6) + "월 " + (@infoPost.created_at).to_s.slice(8..9) + "일" %>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 게시글 본문  -->
+    <div class="card-body pt-2 pb-2">
+      <p></p>
+      <p class="postContent"><%= raw @infoPost.content %></p>
+    </div>
+
+
+    <!-- 댓글  -->
+    <div class="card-footer">
+    <!-- 댓글 더보기 버튼 -->
+      <%# FIXME 댓글 -1개 더보기가 생길경우 주석을 풀면서 해결해야함 %>
+      <div class="mb-3 showReply<%=@infoPost.id%>" style="cursor:pointer">
+        <a class="a-hover-blue showOrHide<%=@infoPost.id%>">댓글
+          <%=@infoPost.replies.length-1 %>개 더 보기</a>
+        <a class="a-hover-blue fold<%=@infoPost.id%>" style="display:none">댓글 접기</a>
+      </div>
+
+      <!-- 댓글 출력 -->
+      <div class="reply_<%=@infoPost.id%>" id="<%=@infoPost.id%>">
+        <% for i in 0..(@infoPost.replies.length-1) %>
+          <% reply = Reply.find(@infoPost.replies[i].id) %>
+
+          <% if i == @infoPost.replies.length-1 %>
+            <div class="showMe<%=@infoPost.id%>">
+          <% else %>
+            <div class="hideMe<%=@infoPost.id%>">
+          <% end %>
+
+          <% if current_user.id == reply.user.id %>
+            <button type="button" class="close destroyReply" aria-label="Close" id="<%=@infoPost.replies[i].id%>" name="<%=@infoPost.id%>">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          <% end %>
+
+            <p class="mb-2">
+              <%= @infoPost.replies[i].replyWriter %>
+              <span class="day-text-style ml-2"><%= (@infoPost.replies[i].created_at).to_s.slice(5..6) + "월 " + (@infoPost.replies[i].created_at).to_s.slice(8..9) + "일" %></span>
+            </p>
+            <p class="mb-0">
+              <%= @infoPost.replies[i].replyContent %>
+            </p>
+            <hr>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- 댓글 작성  -->
+      <%= form_with(url: '/post/reply') do |f| %>
+      <%= hidden_field_tag :postID, "#{@infoPost.id}" %>
+      <div class="row">
+        <div class="col-12 col-lg-10 reply-form-padding">
+          <% if current_user.nil? %>
+            <%= text_field_tag :replyContent, nil , class: "form-control reply-style" ,placeholder: "댓글을 작성하세요." %>
+          <% else %>
+            <%= text_field_tag :replyContent, nil , class: "form-control reply-style" ,placeholder: "댓글을 작성하세요.", required: true  %>
+          <% end %>
+        </div>
+        <div class="col-12 col-lg-2 reply-button-padding reply-button-margin">
+          <% if current_user.nil? %>
+            <button class="btn btn btn-outline-secondary w-100" onclick="location.href='/users/sign_in'">작성</button>
+          <% else %>
+            <%= submit_tag '작성' , class: "btn btn btn-outline-secondary w-100" %>
+          <% end %>
+        </div>
+      </div>
+      <% end %>
+
+    </div>  <!-- 댓글 끝 -->
+  </div>
+</section>

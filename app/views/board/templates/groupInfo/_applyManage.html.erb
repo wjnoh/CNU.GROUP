@@ -1,0 +1,53 @@
+<div class="tab-pane" id="apply" role="tabpanel">
+
+  <div class="row">
+    <% if @applyEmpty %>
+      <div class="text-center w-100 mt-4" style="font-size:1.1rem;">
+        아직 신청자가 없습니다.
+      </div>
+    <% else %>
+      <% @board.applies.each do |apply| %>
+        <!-- 신청 카드 모달 트리거 -->
+        <div class="col-6 col-xl-3 col-lg-4 col-md-4 mt-4">
+          <a href="" class="a-color-black" data-toggle="modal" data-target="#userApplyModal_<%=apply.id%>">
+            <div class="card">
+              <div class="card-body text-center d-flex flex-column align-items-center">
+                <img src="<%= apply.user.profile_picture %>" class="rounded-circle profile-picture-style" width="130" height="130"/>
+              </div>
+              <div class="card-footer text-center">
+                <%= apply.user.name %> - <%= apply.created_at.strftime("%_m월 %-d일") %>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- 신청 카드 모달 -->
+        <div class="modal fade" id="userApplyModal_<%=apply.id%>" role="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title"><span class=""><%= apply.user.name %>님의 신청서</span></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <%= apply.message %>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn btn-outline-secondary" data-dismiss="modal">취소</button>
+                <a href="/apply/<%=apply.id%>" data-method="delete" >
+                  <button type="button" class="btn btn-outline-primary">거절</button>
+                </a>
+                <a href="/apply/<%=apply.id%>" data-method="patch" >
+                  <button type="button" class="btn btn-outline-primary">수락</button>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+</div>

@@ -1,0 +1,114 @@
+
+createReply();
+
+if(currentUser == replyUser){
+  // 댓글 삭제 아이콘
+  $(".showMe"+postID).prepend(
+    "<button type='button' class='close destroyReply' aria-label='Close' id='" + replyID + "' name='" + postID + "'>" +
+      "<span aria-hidden='true'>&times;</span>" +
+    "</button>"
+  );
+
+  // 댓글 삭제 이벤트 핸들러
+  $(".destroyReply").on('click', function(){
+    destroyReply.call(this);
+  });
+
+}
+
+if( $(".hideMe"+postID).length == 1 ){
+  $(".hideMe"+postID).attr('style', 'display:none');
+}
+
+if( $(".hideMe"+postID).length >= 1){
+  $(".showReply" + postID).show();
+}
+
+
+function createReply(){
+  var Now = new Date();
+  M = Now.getMonth()+1;
+  D = Now.getDate();
+
+  postID       = "<%= @postID %>";
+  replyID      = "<%= @reply.id %>";
+  replyWriter  = "<%= @reply.replyWriter %>";
+  replyContent = "<%= @reply.replyContent %>";
+  currentUser  = "<%= current_user.id %>";
+  replyUser    = "<%= @reply.user.id %>";
+
+  currentReplyHide(postID, replyAppend)
+
+  // 댓글을 작성하면 모든 게시글의 댓글 입력을 빈 값으로 설정
+  $(".form-control").val('');
+
+
+  // 댓글을 작성하면 현재 보고있는 댓글(showMe)을 숨긴다(hideMe).
+  function currentReplyHide(postID, callback){
+    $(".showMe"+postID).addClass("hideMe"+postID);
+    $(".showMe"+postID).attr('style', $(".hideMe"+postID).attr('style'));
+    $(".showMe"+postID).removeClass("showMe"+postID);
+
+    callback(postID);
+  }
+
+  // 작성된 댓글 div 생성 및 내용 출력 (class는 showMe이다.)
+  function replyAppend(postID){
+    if(M < 10){
+      M = "0" + M;
+    }
+    $(".reply_"+postID).append(
+      "<div class='showMe"+ postID + "' style>" +
+      "<p class='mb-2'>"+ replyWriter +
+      "<span class='day-text-style ml-2'>" + M + '월 ' + D + '일' + '</span></p>' +
+      "<p class='mb-2'>" + replyContent + "</p>" +
+      "<hr>"+
+      "</div>"
+    );
+
+    $(".showOrHide" + postID).text("댓글 " + $(".hideMe" + postID).length + "개 더 보기");
+  }
+}
+
+
+function destroyReply(){
+  var deleteCheck = confirm("정말로 삭제하시겠습니까?");
+  if(deleteCheck){
+    postReplyID = $(this).attr('id');
+    postID = $(this).attr('name');
+    reply = $(this).parent();
+
+    // 댓글 접기 상태에서 보고 있는 그 댓글을 삭제할 경우, 삭제한 댓글 그 위의 댓글을 보여준다.
+    if (reply.attr('class') == "showMe" + postID) {
+      reply.prev("div").addClass("showMe" + postID);
+      reply.prev("div").removeClass("hideMe" + postID);
+      reply.prev("div").show();
+    }
+
+    // 지우고자 했던 댓글 삭제
+    $.ajax({
+      url: '/post/reply/' + postReplyID,
+      type: 'delete',
+    });
+    $(this).parent().remove();
+
+    // 숨겨진 댓글이 없을 경우 "댓글 더보기/ 댓글 접기"버튼을 숨김
+    if ( $(".hideMe" + postID).length < 1 ) {
+      $(".showReply" + postID).hide();
+    }
+    else {
+      $(".showReply" + postID).show();
+      $(".showOrHide" + postID).text("댓글 " + $(".hideMe" + postID).length + "개 더 보기");
+    }
+
+    // 현재 "댓글 접기" 상태라면 빈 문자열, "댓글 더보기" 상태라면 display: none
+    var isFold = $(".fold" + postID).attributes["style"].value
+    if( isFold ){
+      $(".fold" + postID).text("댓글 접기");
+    }
+
+  }
+  else{
+    return false;
+  }
+}

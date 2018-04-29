@@ -1,0 +1,58 @@
+<div class="container-fluid">
+  <div class="modal-dialog modal-transparent">
+    <div class="modal-content modal-shadow">
+
+      <div class="text-center mt-4">
+        <h2><a href="/" class="a-color-black">CNU.GROUP</a></h2>
+      </div>
+
+      <div class="container m-0">
+        <hr/>
+        <% flash.each do |msg_type, msg| %>
+          <% if msg_type == "alert" %>
+           <h6 style="color: red; margin-bottom: 1rem"><%= msg %></h6>
+          <% end %>
+        <% end %>
+
+        <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+
+        <div class="form-group">
+          <%= f.email_field :email, autofocus: true, placeholder: '이메일', class: 'form-control', required: true %>
+        </div>
+
+        <div class="form-group">
+          <%= f.password_field :password, autocomplete: "off", placeholder: '비밀번호', class: 'form-control passwordPress' , required: true %>
+          <div class="mt-2">
+            <span class="capsLockView" style="color:red; display: none;">Caps Lock is ON</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <%= f.submit "로그인", class: "btn btn-outline-primary btn-block" %>
+        </div>
+        <% end %>
+        <hr/>
+
+        <div class="d-flex">
+
+        <a class="a-none w-100" href="/users/sign_up">
+          <div class="btn btn btn-outline-secondary btn-block">회원가입</div>
+        </a>
+        <a class="a-none w-100 ml-2" href="/users/password/new">
+          <div class="btn btn btn-outline-secondary btn-block">비밀번호 재설정</div>
+        </a>
+
+        </div>
+
+        <br/>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+
+<!-- capsLock JS  -->
+<%= render "templates/capsLockJS" %>

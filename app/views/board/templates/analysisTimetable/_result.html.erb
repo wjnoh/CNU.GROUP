@@ -1,0 +1,26 @@
+<div class='container' style='margin-top:30px;'>
+  <div class='form-group' style='margin-top:30px;'>
+      <div class="text-center mb-4 mt-4"><h3>시간표 분석 결과</h3></div>
+  </div>
+
+    <table>
+      <tr>
+        <td></td>
+        <% @day.each do |d| %>
+        <td>
+          <%= d %>
+        </td>
+        <% end %>
+      </tr>
+      <% @time.each do |t| %>
+      <tr>
+        <td style='width:50px;' id='<%= t %>'><%= t %></td>
+        <% @index.each do |i| %>
+        <td class='drop' id='<%= t %><%= i %>'></td>
+        <% end %>
+      </tr>
+      <% end %>
+    </table>
+  </div>
+
+</section>

@@ -1,0 +1,82 @@
+<div class='container' style='margin-top:30px;'>
+  <div class='form-group' style='margin-top:30px;'>
+    <% if @timetable.main %>
+      <div class="text-center mb-4 mt-4"><h3><%=@timetable.user.name%>의 대표 시간표</h3></div>
+    <% else %>
+      <div class="text-center mb-4 mt-4"><h3><%=@timetable.title%> 시간표</h3></div>
+    <% end %>
+  </div>
+
+  <table>
+    <tr>
+      <td></td>
+      <% @day.each do |d| %>
+      <td>
+        <%= d %>
+      </td>
+      <% end %>
+    </tr>
+    <% @time.each do |t| %>
+    <tr>
+      <td id='<%= t %>'><%= t %></td>
+      <% @index.each do |i| %>
+      <td class='drop' id='<%= t %><%= i %>'></td>
+      <% end %>
+    </tr>
+    <% end %>
+  </table><br>
+
+</div>
+
+
+<script type='text/javascript'>
+  jQuery(function ($) {
+    <% @ttcells.each do |c| %>
+    $('#<%= c.cellId %>').addClass('dropped');
+    <% end %>
+
+    <% @ttcells.each do |c| %>
+    $('#<%= c.cellId %>').text('<%= c.cellName %>');
+    $('#<%= c.cellId %>').attr('rowSpan', '<%= c.rowSpan %>');
+    $('#<%= c.cellId %>').attr('colSpan', '<%= c.colSpan %>');
+    $('#<%= c.cellId %>').css("background-color", '<%= c.cellColor %>');
+
+    point_tr = $('#<%= c.cellId %>').closest('tr');
+    point_td = $('#<%= c.cellId %>').closest('td');
+
+    i = 1;
+    while (i < '<%= c.rowSpan %>') {
+      str = $('tr').eq(point_tr.next('tr').index()).find('td').eq(point_td.index()).attr('id');
+      first_id = str.substring(0, str.length - 1);
+      second_id = str.substring(str.length - 1, str.length);
+
+      $('#' + first_id + second_id).attr('style', 'display:none');
+
+      i++;
+      point_tr = $(point_tr.next('tr'));
+    }
+
+    point_td = point_td.next('td');
+
+    j = 1;
+    while (j < '<%= c.colSpan %>') {
+      point_tr = $('#<%= c.cellId %>').closest('tr');
+
+      i = 0;
+      while (i < '<%= c.rowSpan %>') {
+        str = $('tr').eq(point_tr.index()).find('td').eq(point_td.index()).attr('id');
+        first_id = str.substring(0, str.length - 1);
+        second_id = str.substring(str.length - 1, str.length);
+
+        $('#' + first_id + second_id).attr('style', 'display:none');
+
+        i++;
+        point_tr = $(point_tr.next('tr'));
+      }
+
+      j++;
+      point_td = $(point_td.next('td'));
+    }
+    <% end %>
+  });
+</script>

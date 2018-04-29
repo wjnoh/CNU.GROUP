@@ -1,0 +1,21 @@
+<% if @valuesHashCheckClassAndTimes.empty? %>
+  <div class="col-12 text-center"><h5>오늘은 강의실이 비어 있습니다.</h5></div>
+<% else %>
+  <% @hashCheckClassAndTimes.each { |key , values| %>
+  <div class="col-lg-4 col-md-6 col-12">
+    <div class="card text-center">
+
+      <div class="card-header">
+        <% if key.include? "(수업중)" %>
+          <span style="color:red;"><%= key %></span>
+        <% else %>
+          <span style="color:green;"><%= key %></span>
+        <% end %>
+      </div>
+
+      <%= render "classroom/templates/printModule", key: key, values: values %>
+
+    </div><br>
+  </div>
+  <% } %>
+<% end %>

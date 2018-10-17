@@ -3,15 +3,15 @@
 
 
 
-언어: **HTML5**, **CSS3**, **JS**, Ruby
-
-프레임워크: **Ruby on Rails**
-
-루비 라이브러리(GEM): **Devise**, **will_paginate**, Tinymce, i18n, Roo, Carrierwave, Figaro
-
-라이브러리: **Bootstrap**, **jQuery**, **Masonry**, **FontAwesome**
-
-기타 특징: **Responsive Design**, AJAX
+> 언어: **HTML5**, **CSS3**, **JS**, Ruby
+>
+> 프레임워크: **Ruby on Rails**
+>
+> 루비 라이브러리(GEM): **Devise**, **will_paginate**, Tinymce, i18n, Roo, Carrierwave, Figaro
+>
+> 라이브러리: **Bootstrap**, **jQuery**, **Masonry**, **FontAwesome**
+>
+> 기타 특징: **Responsive Design**, AJAX
 
 
 
